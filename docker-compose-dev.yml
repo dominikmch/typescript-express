@@ -15,3 +15,23 @@ services:
     ports:
       - '4000:4000'
     command: npm run dev
+  mongo:
+    container_name: mongo-db
+    image: mongo:7.0.0
+    environment:
+      - MONGO_INITDB_DATABASE=typescript-db
+      - MONGO_INITDB_ROOT_USERNAME=dev
+      - MONGO_INITDB_ROOT_PASSWORD=devpass
+    ports:
+      - '27010:27017'
+    volumes:
+      - mongo-data:/data/db
+      - ./.docker-entrypoint-initdb.d/:/docker-entrypoint-initdb.d/
+    restart: unless-stopped
+    logging:
+      driver: 'json-file'
+      options:
+        max-file: '5'
+        max-size: '10m'
+volumes:
+  mongo-data:
