@@ -1,20 +1,14 @@
-import dotenv from 'dotenv';
 import express, { Request, Response } from 'express';
-import { add } from './add/add';
-// load the environment variables from the .env file
-dotenv.config({
-  path: '.env',
-});
+import config from 'config';
+import connect from './utils/db/connect';
+import routerApi from './routes/api';
 
 const app = express();
-const port = process.env.PORT || 4000;
+const port = config.get<number>('port') || 4000;
 
-app.get('/', (req: Request, res: Response) => {
-  res.send(
-    `Hello, TypeScript Express! ${add(1, 2)}, ${process.env.TEST_VARIABLE}`
-  );
-});
+app.use('/api', routerApi);
 
-app.listen(port, () => {
+app.listen(port, async () => {
+  await connect();
   console.log(`Server running at http://localhost:${port}`);
 });
